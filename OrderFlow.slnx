@@ -2,7 +2,9 @@
     <Folder Name="/Solution Items/">
         <File Path="compose.yaml" />
     </Folder>
-    <Folder Name="/src/" />
+    <Folder Name="/src/">
+        <Project Path="src/OrderFlow.Client/OrderFlow.Client.csproj" />
+    </Folder>
     <Folder Name="/src/Inventory/">
         <Project Path="src/Inventory/OrderFlow.Inventory.Api/OrderFlow.Inventory.Api.csproj" />
         <Project Path="src/Inventory/OrderFlow.Inventory.Application/OrderFlow.Inventory.Application.csproj" />
@@ -21,5 +23,4 @@
         <Project Path="src/Payment/OrderFlow.Payment.Domain/OrderFlow.Payment.Domain.csproj" />
         <Project Path="src/Payment/OrderFlow.Payment.Infrastructure/OrderFlow.Payment.Infrastructure.csproj" />
     </Folder>
-    <Project Path="OrderFlow.Client/OrderFlow.Client.csproj" />
 </Solution>
