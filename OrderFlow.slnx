@@ -1,0 +1,25 @@
+<Solution>
+    <Folder Name="/Solution Items/">
+        <File Path="compose.yaml" />
+    </Folder>
+    <Folder Name="/src/" />
+    <Folder Name="/src/Inventory/">
+        <Project Path="src/Inventory/OrderFlow.Inventory.Api/OrderFlow.Inventory.Api.csproj" />
+        <Project Path="src/Inventory/OrderFlow.Inventory.Application/OrderFlow.Inventory.Application.csproj" />
+        <Project Path="src/Inventory/OrderFlow.Inventory.Domain/OrderFlow.Inventory.Domain.csproj" />
+        <Project Path="src/Inventory/OrderFlow.Inventory.Infrastructure/OrderFlow.Inventory.Infrastructure.csproj" />
+    </Folder>
+    <Folder Name="/src/Order/">
+        <Project Path="src/Order/OrderFlow.Order.Api/OrderFlow.Order.Api.csproj" />
+        <Project Path="src/Order/OrderFlow.Order.Application/OrderFlow.Order.Application.csproj" />
+        <Project Path="src/Order/OrderFlow.Order.Domain/OrderFlow.Order.Domain.csproj" />
+        <Project Path="src/Order/OrderFlow.Order.Infrastructure/OrderFlow.Order.Infrastructure.csproj" />
+    </Folder>
+    <Folder Name="/src/Payment/">
+        <Project Path="src/Payment/OrderFlow.Payment.Api/OrderFlow.Payment.Api.csproj" />
+        <Project Path="src/Payment/OrderFlow.Payment.Application/OrderFlow.Payment.Application.csproj" />
+        <Project Path="src/Payment/OrderFlow.Payment.Domain/OrderFlow.Payment.Domain.csproj" />
+        <Project Path="src/Payment/OrderFlow.Payment.Infrastructure/OrderFlow.Payment.Infrastructure.csproj" />
+    </Folder>
+    <Project Path="OrderFlow.Client/OrderFlow.Client.csproj" />
+</Solution>

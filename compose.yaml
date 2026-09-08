@@ -1,0 +1,19 @@
+﻿services:
+  orderflow.order.api:
+    image: orderflow.order.api
+    build:
+      context: .
+      dockerfile: src/Order/OrderFlow.Order.Api/Dockerfile
+
+  orderflow.inventory.api:
+    image: orderflow.inventory.api
+    build:
+      context: .
+      dockerfile: src/Inventory/OrderFlow.Inventory.Api/Dockerfile
+
+  orderflow.payment.api:
+    image: orderflow.payment.api
+    build:
+      context: .
+      dockerfile: src/Payment/OrderFlow.Payment.Api/Dockerfile
+
