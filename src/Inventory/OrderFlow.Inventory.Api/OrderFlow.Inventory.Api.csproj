@@ -17,4 +17,9 @@
         </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\OrderFlow.Inventory.Application\OrderFlow.Inventory.Application.csproj" />
+      <ProjectReference Include="..\OrderFlow.Inventory.Infrastructure\OrderFlow.Inventory.Infrastructure.csproj" />
+    </ItemGroup>
+
 </Project>

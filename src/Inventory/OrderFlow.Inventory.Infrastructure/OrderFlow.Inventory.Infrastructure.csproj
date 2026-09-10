@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\OrderFlow.Inventory.Application\OrderFlow.Inventory.Application.csproj" />
+    </ItemGroup>
+
 </Project>

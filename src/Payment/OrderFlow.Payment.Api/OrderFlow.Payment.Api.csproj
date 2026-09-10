@@ -17,4 +17,9 @@
         </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\OrderFlow.Payment.Application\OrderFlow.Payment.Application.csproj" />
+      <ProjectReference Include="..\OrderFlow.Payment.Infrastructure\OrderFlow.Payment.Infrastructure.csproj" />
+    </ItemGroup>
+
 </Project>
