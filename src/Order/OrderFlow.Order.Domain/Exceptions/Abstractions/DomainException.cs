@@ -1,16 +1,18 @@
 namespace OrderFlow.Order.Domain.Exceptions.Abstractions;
 
-public class DomainException : Exception
+public abstract class DomainException : Exception
 {
-    public DomainException()
+    protected DomainException()
     {
     }
 
-    public DomainException(string message) : base(message)
+    protected DomainException(string message)
+        : base(message)
     {
     }
 
-    public DomainException(string message, Exception innerException) : base(message, innerException)
+    protected DomainException(string message, Exception innerException)
+        : base(message, innerException)
     {
     }
 }

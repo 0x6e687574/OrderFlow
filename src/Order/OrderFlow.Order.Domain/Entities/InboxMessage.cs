@@ -1,7 +1,18 @@
 ﻿namespace OrderFlow.Order.Domain.Entities;
 
-public class InboxMessage
+public sealed class InboxMessage
 {
     public Guid EventId { get; private set; }
     public DateTime ProcessedAt { get; private set; }
+
+    private InboxMessage()
+    {
+    }
+
+    public static InboxMessage Create(Guid eventId, DateTime processedAt)
+        => new()
+        {
+            EventId = eventId,
+            ProcessedAt = processedAt
+        };
 }

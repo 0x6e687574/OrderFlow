@@ -3,7 +3,7 @@ using OrderFlow.Order.Domain.Exceptions;
 
 namespace OrderFlow.Order.Domain.Entities;
 
-public class Order
+public sealed class Order
 {
     private readonly List<OrderLine> _orderLines = [];
 
@@ -18,31 +18,81 @@ public class Order
 
     private Order()
     {
-        Id = Guid.NewGuid();
-        Status = OrderStatus.Pending;
-        CreatedAt = DateTime.UtcNow;
-        UpdatedAt = DateTime.UtcNow;
     }
 
-    public static Order Create(string customerId, IEnumerable<OrderLine> orderLines)
+    public static Order Create(string customerId)
+        => new()
+        {
+            Id = Guid.NewGuid(),
+            CustomerId = customerId,
+            Status = OrderStatus.Pending,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+    public void AddRange(IReadOnlyCollection<OrderLine> orderLines)
     {
-        var order = new Order();
+        if (IsEmptyOrderLines(orderLines))
+        {
+            throw new EmptyOrderLinesException();
+        }
+
+        if (IsDuplicatedOrderLines(orderLines))
+        {
+            throw new DuplicatedOrderLinesException();
+        }
 
         foreach (var orderLine in orderLines)
         {
-            order.AddItem(orderLine);
+            AddItem(orderLine);
         }
 
-
+        CalculateTotalAmount();
     }
 
-    public void AddItem(OrderLine orderLine)
+    public void Reserve() => SetStatus(OrderStatus.Reserving, OrderStatus.Pending);
+
+    public void Charge() => SetStatus(OrderStatus.Charging, OrderStatus.Reserving);
+
+    public void Confirm() => SetStatus(OrderStatus.Confirmed, OrderStatus.Charging);
+
+    public void Cancel()
+        => SetStatus(OrderStatus.Cancelled, OrderStatus.Reserving, OrderStatus.Charging);
+
+    private static bool IsEmptyOrderLines(IReadOnlyCollection<OrderLine> orderLines)
+        => orderLines is not { Count: > 0 };
+
+    private static bool IsDuplicatedOrderLines(IReadOnlyCollection<OrderLine> orderLines)
+        => orderLines.Count != orderLines.DistinctBy(ol => ol.Sku).Count();
+
+    private bool IsValidStatuses(OrderStatus[] statuses)
+        => statuses.Contains(Status);
+
+    private void AddItem(OrderLine orderLine)
     {
-        if (Status is not OrderStatus.Pending)
+        EnsureStatus(OrderStatus.Pending);
+
+        _orderLines.Add(orderLine);
+    }
+
+    private void CalculateTotalAmount()
+    {
+        TotalAmount = _orderLines.Sum(ol => ol.Quantity * ol.UnitPrice);
+    }
+
+    private void EnsureStatus(params OrderStatus[] allowedCurrentStatuses)
+    {
+        if (!IsValidStatuses(allowedCurrentStatuses))
         {
             throw new InvalidOrderStatusException();
         }
+    }
 
-        _orderLines.Add(orderLine);
+    private void SetStatus(OrderStatus status, params OrderStatus[] allowedCurrentStatuses)
+    {
+        EnsureStatus(allowedCurrentStatuses);
+
+        Status = status;
+        UpdatedAt = DateTime.UtcNow;
     }
 }
