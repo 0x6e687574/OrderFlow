@@ -50,11 +50,14 @@ public sealed class Order
         CalculateTotalAmount();
     }
 
-    public void Reserve() => SetStatus(OrderStatus.Reserving, OrderStatus.Pending);
+    public void Reserve()
+        => SetStatus(OrderStatus.Reserving, OrderStatus.Pending);
 
-    public void Charge() => SetStatus(OrderStatus.Charging, OrderStatus.Reserving);
+    public void Charge()
+        => SetStatus(OrderStatus.Charging, OrderStatus.Reserving);
 
-    public void Confirm() => SetStatus(OrderStatus.Confirmed, OrderStatus.Charging);
+    public void Confirm()
+        => SetStatus(OrderStatus.Confirmed, OrderStatus.Charging);
 
     public void Cancel()
         => SetStatus(OrderStatus.Cancelled, OrderStatus.Reserving, OrderStatus.Charging);
@@ -76,9 +79,7 @@ public sealed class Order
     }
 
     private void CalculateTotalAmount()
-    {
-        TotalAmount = _orderLines.Sum(ol => ol.Quantity * ol.UnitPrice);
-    }
+        => TotalAmount = _orderLines.Sum(ol => ol.Quantity * ol.UnitPrice);
 
     private void EnsureStatus(params OrderStatus[] allowedCurrentStatuses)
     {
