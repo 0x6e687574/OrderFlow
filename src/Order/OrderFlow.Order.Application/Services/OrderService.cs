@@ -9,11 +9,11 @@ using Order = Domain.Entities.Order;
 
 public class OrderService(IUnitOfWork unitOfWork) : IOrderService
 {
-    public async Task CreateAsync(string customerId, IReadOnlyCollection<OrderLineDto> dtos)
+    public async Task CreateAsync(OrderDto dto)
     {
-        var order = Order.Create(customerId);
+        var order = Order.Create(dto.CustomerId);
 
-        var orderLines = dtos
+        var orderLines = dto.OrderLines
             .Select(ol =>
                 OrderLine.Create(
                     order.Id,

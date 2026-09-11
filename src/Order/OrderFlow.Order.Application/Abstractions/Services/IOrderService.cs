@@ -4,5 +4,5 @@ namespace OrderFlow.Order.Application.Abstractions.Services;
 
 public interface IOrderService
 {
-    public Task CreateAsync(string customerId, IReadOnlyCollection<OrderLineDto> dtos);
+    public Task CreateAsync(OrderDto dto);
 }
