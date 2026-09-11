@@ -21,25 +21,13 @@ public sealed class OrderSagaState
 
     public void Reserve(Guid eventId, bool reservationCompleted)
     {
-        EnsureState(ReservationCompleted);
-
         ReservationCompleted = reservationCompleted;
         LastProcessedEventId = eventId;
     }
 
     public void Pay(Guid eventId, bool paymentCompleted)
     {
-        EnsureState(PaymentCompleted);
-
         PaymentCompleted = paymentCompleted;
         LastProcessedEventId = eventId;
-    }
-
-    private static void EnsureState(bool state)
-    {
-        if (state is not false)
-        {
-            throw new InvalidSagaStateException();
-        }
     }
 }
