@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using OrderFlow.Order.Api.Handlers;
 using OrderFlow.Order.Application;
 using OrderFlow.Order.Infrastructure;
 using Scalar.AspNetCore;
@@ -27,6 +28,9 @@ builder.Services.AddApiVersioning(options =>
 })
 .AddOpenApi();
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -41,5 +45,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapControllers();
+
+app.UseExceptionHandler();
 
 app.Run();

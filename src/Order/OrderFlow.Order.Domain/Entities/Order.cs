@@ -8,7 +8,21 @@ public sealed class Order
     private readonly List<OrderLine> _orderLines = [];
 
     public Guid Id { get; private set; }
-    public string CustomerId { get; private set; } = null!;
+
+    public string CustomerId
+    {
+        get;
+        private set
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new InvalidCustomerIdException();
+            }
+
+            field = value;
+        }
+    } = null!;
+
     public decimal TotalAmount { get; private set; }
     public OrderStatus Status { get; private set; }
     public DateTime CreatedAt { get; private set; }
