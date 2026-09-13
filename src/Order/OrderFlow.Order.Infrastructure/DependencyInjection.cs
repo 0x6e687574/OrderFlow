@@ -1,8 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DotPulsar;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OrderFlow.Order.Application.Abstractions.Messaging;
 using OrderFlow.Order.Application.Abstractions.Repositories;
 using OrderFlow.Order.Application.Abstractions.UnitOfWorks;
+using OrderFlow.Order.Infrastructure.Messaging;
+using OrderFlow.Order.Infrastructure.Messaging.Providers;
 using OrderFlow.Order.Infrastructure.Persistence;
 using OrderFlow.Order.Infrastructure.Persistence.Repositories;
 using OrderFlow.Order.Infrastructure.Persistence.UnitOfWorks;
@@ -18,9 +22,14 @@ public static class DependencyInjection
         services.AddDbContext<OrderDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
-        services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddSingleton(_ => PulsarClient.Builder().Build());
+        services.AddSingleton<IEventBus, PulsarEventBus>();
 
+        services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IOutboxMessagesRepository, OutboxMessageRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+        services.AddHostedService<OrderProvider>();
 
         return services;
     }

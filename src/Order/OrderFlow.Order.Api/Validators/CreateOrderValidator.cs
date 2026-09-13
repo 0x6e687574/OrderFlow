@@ -11,7 +11,11 @@ public class CreateOrderValidator : AbstractValidator<CreateOrderRequest>
             .NotEmpty();
 
         RuleFor(x => x.OrderLines)
-            .NotEmpty();
+            .NotEmpty()
+            .Must(x => x
+                .Select(ol => ol.Sku)
+                .Distinct()
+                .Count() == x.Count);
 
         RuleForEach(x => x.OrderLines)
             .ChildRules(line =>

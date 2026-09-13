@@ -1,6 +1,9 @@
-﻿using OrderFlow.Order.Application.Abstractions.Services;
+﻿using System.Text.Json;
+using OrderFlow.Order.Application.Abstractions.Services;
 using OrderFlow.Order.Application.Abstractions.UnitOfWorks;
+using OrderFlow.Order.Application.Constants;
 using OrderFlow.Order.Application.Dtos;
+using OrderFlow.Order.Application.Events;
 using OrderFlow.Order.Domain.Entities;
 
 namespace OrderFlow.Order.Application.Services;
@@ -25,6 +28,29 @@ public class OrderService(IUnitOfWork unitOfWork) : IOrderService
         order.AddRange(orderLines);
 
         await unitOfWork.Orders.AddAsync(order);
+
+        var @event = new OrderPlacedEvent
+        {
+            OrderId = order.Id,
+            CustomerId = order.CustomerId,
+            OrderLines = order
+                .OrderLines
+                .Select(ol => new OrderPlacedOrderLineEvent
+                {
+                    Sku = ol.Sku,
+                    Quantity = ol.Quantity,
+                    UnitPrice = ol.UnitPrice
+                })
+                .ToList(),
+            TotalAmount = order.TotalAmount
+        };
+
+        var outboxMessage = OutboxMessage.Create(
+            TopicName.OrderPlaced,
+            JsonSerializer.SerializeToDocument(@event),
+            order.Id);
+
+        await unitOfWork.OutboxMessages.AddAsync(outboxMessage);
 
         await unitOfWork.SaveChangesAsync();
     }

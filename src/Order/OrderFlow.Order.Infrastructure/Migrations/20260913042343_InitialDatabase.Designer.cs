@@ -13,7 +13,7 @@ using OrderFlow.Order.Infrastructure.Persistence;
 namespace OrderFlow.Order.Infrastructure.Migrations
 {
     [DbContext(typeof(OrderDbContext))]
-    [Migration("20260910145112_InitialDatabase")]
+    [Migration("20260913042343_InitialDatabase")]
     partial class InitialDatabase
     {
         /// <inheritdoc />
@@ -123,6 +123,9 @@ namespace OrderFlow.Order.Infrastructure.Migrations
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<Guid>("CorrelationId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");

@@ -56,6 +56,7 @@ namespace OrderFlow.Order.Infrastructure.Migrations
                     EventId = table.Column<Guid>(type: "uuid", nullable: false),
                     Topic = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     Payload = table.Column<JsonDocument>(type: "jsonb", nullable: false),
+                    CorrelationId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     PublishedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },

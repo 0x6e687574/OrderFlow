@@ -5,5 +5,7 @@ namespace OrderFlow.Order.Application.Abstractions.UnitOfWorks;
 public interface IUnitOfWork
 {
     public IOrderRepository Orders { get; }
+    public IOutboxMessagesRepository OutboxMessages { get; }
+
     public Task SaveChangesAsync();
 }
