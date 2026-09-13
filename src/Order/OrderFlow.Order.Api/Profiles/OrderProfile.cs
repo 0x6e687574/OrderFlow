@@ -11,7 +11,11 @@ public class OrderProfile : Profile
     {
         CreateMap<CreateOrderRequest, CreateOrderDto>();
         CreateMap<CreateOrderLineRequest, CreateOrderLineDto>();
-
         CreateMap<CreateOrderResponseDto, CreateOrderResponse>();
+
+        CreateMap<GetByIdResponseDto, GetByIdResponse>();
+        CreateMap<GetByIdOrderLineResponseDto, GetByIdOrderLineResponse>();
+
+        CreateMap<GetByCustomerIdResponseDto, GetByCustomerIdResponse>();
     }
 }

@@ -162,7 +162,7 @@ namespace OrderFlow.Order.Infrastructure.Migrations
             modelBuilder.Entity("OrderFlow.Order.Domain.Entities.OrderSagaState", b =>
                 {
                     b.HasOne("OrderFlow.Order.Domain.Entities.Order", null)
-                        .WithOne()
+                        .WithOne("OrderSagaState")
                         .HasForeignKey("OrderFlow.Order.Domain.Entities.OrderSagaState", "OrderId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -171,6 +171,9 @@ namespace OrderFlow.Order.Infrastructure.Migrations
             modelBuilder.Entity("OrderFlow.Order.Domain.Entities.Order", b =>
                 {
                     b.Navigation("OrderLines");
+
+                    b.Navigation("OrderSagaState")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

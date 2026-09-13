@@ -11,11 +11,11 @@ public class OrderSagaStateConfiguration : IEntityTypeConfiguration<OrderSagaSta
     public void Configure(EntityTypeBuilder<OrderSagaState> builder)
     {
         builder.ToTable("order_saga_state", "orderflow_orders");
-        
+
         builder.HasKey(e => e.OrderId);
 
         builder.HasOne<Order>()
-            .WithOne()
+            .WithOne(o => o.OrderSagaState)
             .HasForeignKey<OrderSagaState>(e => e.OrderId)
             .OnDelete(DeleteBehavior.NoAction);
     }

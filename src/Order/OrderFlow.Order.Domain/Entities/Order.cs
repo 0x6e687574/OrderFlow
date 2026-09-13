@@ -29,6 +29,7 @@ public sealed class Order
     public DateTime UpdatedAt { get; private set; }
 
     public IReadOnlyCollection<OrderLine> OrderLines => _orderLines.AsReadOnly();
+    public OrderSagaState OrderSagaState { get; private set; } = null!;
 
     private Order()
     {
@@ -63,6 +64,8 @@ public sealed class Order
 
         CalculateTotalAmount();
     }
+
+    public void AddState(OrderSagaState state) => OrderSagaState = state;
 
     public void Reserve()
         => SetStatus(OrderStatus.Reserving, OrderStatus.Pending);

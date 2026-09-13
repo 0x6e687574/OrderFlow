@@ -29,4 +29,34 @@ public class OrderController(IOrderService orderService, IMapper mapper) : Contr
 
         return Accepted(response);
     }
+
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetById([FromRoute] Guid id)
+    {
+        var responseDto = await orderService.GetByIdAsync(id);
+
+        if (responseDto is null)
+        {
+            return NotFound();
+        }
+
+        var response = mapper.Map<GetByIdResponse>(responseDto);
+
+        return Ok(response);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetById([FromQuery] string customerId)
+    {
+        var responseDto = await orderService.GetByCustomerIdAsync(customerId);
+
+        if (responseDto is null)
+        {
+            return NotFound();
+        }
+
+        var response = mapper.Map<GetByCustomerIdResponse>(responseDto);
+
+        return Ok(response);
+    }
 }
