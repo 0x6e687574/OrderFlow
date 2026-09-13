@@ -1,5 +1,7 @@
 using Asp.Versioning;
 using FluentValidation;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using OrderFlow.Order.Api.Handlers;
 using OrderFlow.Order.Application;
 using OrderFlow.Order.Infrastructure;
@@ -45,5 +47,10 @@ app.UseHttpsRedirection();
 app.UseExceptionHandler();
 
 app.MapControllers();
+
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.Run();

@@ -2,9 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using OrderFlow.Order.Application.Abstractions.Messaging;
 using OrderFlow.Order.Application.Abstractions.Repositories;
 using OrderFlow.Order.Application.Abstractions.UnitOfWorks;
+using OrderFlow.Order.Infrastructure.HealthChecks;
 using OrderFlow.Order.Infrastructure.Messaging;
 using OrderFlow.Order.Infrastructure.Messaging.Providers;
 using OrderFlow.Order.Infrastructure.Persistence;
@@ -22,7 +24,11 @@ public static class DependencyInjection
         services.AddDbContext<OrderDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
-        services.AddSingleton(_ => PulsarClient.Builder().Build());
+        services.AddSingleton(_ => PulsarClient
+            .Builder()
+            .ServiceUrl(new Uri(configuration["Pulsar:ServiceUrl"] ?? throw new InvalidOperationException()))
+            .Build());
+        
         services.AddSingleton<IEventBus, PulsarEventBus>();
 
         services.AddScoped<IOrderRepository, OrderRepository>();
@@ -31,6 +37,17 @@ public static class DependencyInjection
 
         services.AddHostedService<OrderProvider>();
 
+        services.AddHttpClient();
+        
+        services.AddHealthChecks()
+            .AddNpgSql(
+                connectionString: configuration.GetConnectionString("DefaultConnection")!,
+                name: "postgres",
+                failureStatus: HealthStatus.Unhealthy)
+            .AddCheck<PulsarHealthCheck>(
+                name: "pulsar",
+                failureStatus: HealthStatus.Unhealthy);
+        
         return services;
     }
 }
