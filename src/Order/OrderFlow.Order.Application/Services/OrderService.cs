@@ -12,7 +12,7 @@ using Order = Domain.Entities.Order;
 
 public class OrderService(IUnitOfWork unitOfWork) : IOrderService
 {
-    public async Task CreateAsync(OrderDto dto)
+    public async Task<CreateOrderResponseDto> CreateAsync(CreateOrderDto dto)
     {
         var order = Order.Create(dto.CustomerId);
 
@@ -53,5 +53,14 @@ public class OrderService(IUnitOfWork unitOfWork) : IOrderService
         await unitOfWork.OutboxMessages.AddAsync(outboxMessage);
 
         await unitOfWork.SaveChangesAsync();
+
+        var response = new CreateOrderResponseDto
+        {
+            OrderId = order.Id,
+            CorrelationId = order.Id,
+            Status = order.Status.ToString()
+        };
+
+        return response;
     }
 }

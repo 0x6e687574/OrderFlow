@@ -1,6 +1,6 @@
 ﻿namespace OrderFlow.Order.Application.Dtos;
 
-public class OrderLineDto
+public class CreateOrderLineDto
 {
     public string Sku { get; set; } = null!;
     public int Quantity { get; set; }

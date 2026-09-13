@@ -3,6 +3,7 @@ using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using OrderFlow.Order.Api.Contracts.Requests;
+using OrderFlow.Order.Api.Contracts.Responses;
 using OrderFlow.Order.Application.Abstractions.Services;
 using OrderFlow.Order.Application.Dtos;
 
@@ -20,10 +21,12 @@ public class OrderController(IOrderService orderService, IMapper mapper) : Contr
     {
         await validator.ValidateAndThrowAsync(request);
 
-        var dto = mapper.Map<OrderDto>(request);
+        var dto = mapper.Map<CreateOrderDto>(request);
 
-        await orderService.CreateAsync(dto);
+        var responseDto = await orderService.CreateAsync(dto);
 
-        return Ok();
+        var response = mapper.Map<CreateOrderResponse>(responseDto);
+
+        return Accepted(response);
     }
 }

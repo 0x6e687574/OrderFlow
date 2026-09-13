@@ -36,8 +36,4 @@
       <ProjectReference Include="..\OrderFlow.Order.Infrastructure\OrderFlow.Order.Infrastructure.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Contracts\Responses\" />
-    </ItemGroup>
-
 </Project>
