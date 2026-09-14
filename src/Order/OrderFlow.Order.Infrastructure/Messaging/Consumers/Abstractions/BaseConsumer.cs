@@ -17,7 +17,7 @@ public abstract class BaseConsumer<T>(IPulsarClient client) : BackgroundService
     protected abstract string Topic { get; }
     protected abstract string Subscription { get; }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    protected sealed override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         await using var consumer = client
             .NewConsumer(Schema.String)

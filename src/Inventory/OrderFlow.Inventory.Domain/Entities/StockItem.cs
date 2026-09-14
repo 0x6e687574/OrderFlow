@@ -42,14 +42,12 @@ public sealed class StockItem
         => new()
         {
             Sku = sku,
-            QuantityOnHand = quantityOnHand,
+            QuantityOnHand = quantityOnHand
         };
 
-    public void Reserve(int quantity)
-        => QuantityReserved += quantity;
+    public void Reserve(int quantity) => QuantityReserved += quantity;
 
-    public void Cancel(int quantity)
-        => QuantityReserved -= quantity;
+    public void Cancel(int quantity) => QuantityReserved -= quantity;
 
     public void Consume(int quantity)
     {
