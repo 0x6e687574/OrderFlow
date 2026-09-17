@@ -1,0 +1,14 @@
+﻿using Microsoft.EntityFrameworkCore;
+using OrderFlow.Inventory.Application.Abstractions.Repositories;
+using OrderFlow.Inventory.Domain.Entities;
+
+namespace OrderFlow.Inventory.Infrastructure.Persistence.Repository;
+
+public class StockItemRepository(InventoryDbContext inventoryDbContext) : IStockItemRepository
+{
+    public async Task AddAsync(StockItem stockItem)
+        => await inventoryDbContext.StockItems.AddAsync(stockItem);
+
+    public async Task<IReadOnlyCollection<StockItem>> GetAllAsync()
+        => await inventoryDbContext.StockItems.ToListAsync();
+}

@@ -11,11 +11,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Persistence\Repository\" />
-      <Folder Include="Persistence\UnitOfWorks\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="9.0.0" />
       <PackageReference Include="DotPulsar" Version="5.3.3" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.3">
@@ -25,6 +20,11 @@
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.12" />
       <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.12" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="HealthChecks\" />
+      <Folder Include="Messaging\Providers\" />
     </ItemGroup>
 
 </Project>

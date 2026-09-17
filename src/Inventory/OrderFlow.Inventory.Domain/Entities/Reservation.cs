@@ -5,7 +5,7 @@ namespace OrderFlow.Inventory.Domain.Entities;
 
 public sealed class Reservation
 {
-    public long Id { get; private set; }
+    public Guid Id { get; private set; }
     public Guid OrderId { get; private set; }
     public string Sku { get; private set; } = null!;
 
@@ -33,6 +33,7 @@ public sealed class Reservation
     public static Reservation Create(Guid orderId, string sku, int quantity)
         => new()
         {
+            Id = Guid.NewGuid(),
             OrderId = orderId,
             Sku = sku,
             Quantity = quantity,

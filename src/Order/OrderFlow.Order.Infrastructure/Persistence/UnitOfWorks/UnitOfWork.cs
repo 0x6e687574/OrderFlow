@@ -9,8 +9,8 @@ public class UnitOfWork(
     IOutboxMessagesRepository outboxMessagesRepository)
     : IUnitOfWork
 {
-    public IOrderRepository Orders { get; } = orderRepository;
-    public IOutboxMessagesRepository OutboxMessages { get; } = outboxMessagesRepository;
+    public IOrderRepository Orders => orderRepository;
+    public IOutboxMessagesRepository OutboxMessages => outboxMessagesRepository;
 
     public async Task SaveChangesAsync()
         => await orderDbContext.SaveChangesAsync();
