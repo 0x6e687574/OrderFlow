@@ -49,8 +49,14 @@ public class OrderPlacedConsumer(
             await HandleReservationFailedAsync(payload.OrderId, cancellationToken);
             return;
         }
-        
+
         await MakeReservations(payload.OrderId, payload.OrderLines, cancellationToken);
+
+        var reservedQuantities = payload.OrderLines.ToDictionary(
+            ol => ol.Sku,
+            ol => ol.Quantity);
+
+        IncreaseQuantityReserved(stockItems, reservedQuantities);
 
         await HandleReservationSucceededAsync(
             payload.OrderId,
@@ -129,5 +135,15 @@ public class OrderPlacedConsumer(
         await inventoryDbContext.OutboxMessages.AddAsync(outboxMessage, cancellationToken);
 
         await inventoryDbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    private void IncreaseQuantityReserved(
+        HashSet<StockItem> stockItems,
+        Dictionary<string, int> reservedQuantities)
+    {
+        foreach (var stockItem in stockItems)
+        {
+            stockItem.Reserve(reservedQuantities[stockItem.Sku]);
+        }
     }
 }

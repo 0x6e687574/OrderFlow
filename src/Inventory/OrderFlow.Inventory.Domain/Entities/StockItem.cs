@@ -55,6 +55,8 @@ public sealed class StockItem
         QuantityReserved -= quantity;
     }
 
+    public void Adjust(int quantity) => QuantityOnHand = quantity;
+
     private bool IsInBoundary(int quantityReserved)
         => quantityReserved >= 0 && quantityReserved <= QuantityOnHand;
 }

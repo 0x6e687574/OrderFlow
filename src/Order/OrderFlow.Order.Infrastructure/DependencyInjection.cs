@@ -26,7 +26,7 @@ public static class DependencyInjection
 
         services.AddSingleton(_ => PulsarClient
             .Builder()
-            .ServiceUrl(new Uri(configuration["Pulsar:ServiceUrl"] ?? throw new InvalidOperationException()))
+            .ServiceUrl(new Uri(configuration["Pulsar:ServiceUrl"]!))
             .Build());
         
         services.AddSingleton<IEventBus, PulsarEventBus>();

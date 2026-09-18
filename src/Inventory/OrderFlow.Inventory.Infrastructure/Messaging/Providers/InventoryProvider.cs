@@ -1,13 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using OrderFlow.Order.Application.Abstractions.Messaging;
-using OrderFlow.Order.Domain.Entities;
-using OrderFlow.Order.Infrastructure.Persistence;
+using OrderFlow.Inventory.Application.Abstractions.Messaging;
+using OrderFlow.Inventory.Application.Constants;
+using OrderFlow.Inventory.Domain.Entities;
+using OrderFlow.Inventory.Infrastructure.Persistence;
 
-namespace OrderFlow.Order.Infrastructure.Messaging.Providers;
+namespace OrderFlow.Inventory.Infrastructure.Messaging.Providers;
 
-public class OrderProvider(IServiceProvider serviceProvider, IEventBus eventBus) : BackgroundService
+public class InventoryProvider(IServiceProvider serviceProvider, IEventBus eventBus) : BackgroundService
 {
     private const int MaxHandle = 10;
 
@@ -17,17 +18,16 @@ public class OrderProvider(IServiceProvider serviceProvider, IEventBus eventBus)
     {
         using var scope = serviceProvider.CreateScope();
 
-        await using var orderDbContext = scope
+        await using var inventoryDbContext = scope
             .ServiceProvider
-            .GetRequiredService<OrderDbContext>();
+            .GetRequiredService<InventoryDbContext>();
 
         using var timer = new PeriodicTimer(_period);
 
         while (!stoppingToken.IsCancellationRequested &&
                await timer.WaitForNextTickAsync(stoppingToken))
         {
-            var outboxMessages = await orderDbContext
-                .OutboxMessages
+            var outboxMessages = await inventoryDbContext.OutboxMessages
                 .Where(om => om.PublishedAt == null)
                 .OrderBy(om => om.CreatedAt)
                 .Take(MaxHandle)
@@ -47,7 +47,7 @@ public class OrderProvider(IServiceProvider serviceProvider, IEventBus eventBus)
 
                 outboxMessage.Publish();
 
-                await orderDbContext.SaveChangesAsync(stoppingToken);
+                await inventoryDbContext.SaveChangesAsync(stoppingToken);
             }
         }
     }

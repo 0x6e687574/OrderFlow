@@ -22,9 +22,4 @@
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="HealthChecks\" />
-      <Folder Include="Messaging\Providers\" />
-    </ItemGroup>
-
 </Project>

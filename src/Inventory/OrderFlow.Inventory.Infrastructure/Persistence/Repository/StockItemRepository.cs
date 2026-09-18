@@ -9,6 +9,9 @@ public class StockItemRepository(InventoryDbContext inventoryDbContext) : IStock
     public async Task AddAsync(StockItem stockItem)
         => await inventoryDbContext.StockItems.AddAsync(stockItem);
 
+    public async Task<StockItem?> GetAsync(string sku)
+        => await inventoryDbContext.StockItems.FindAsync(sku);
+
     public async Task<IReadOnlyCollection<StockItem>> GetAllAsync()
         => await inventoryDbContext.StockItems.ToListAsync();
 }
