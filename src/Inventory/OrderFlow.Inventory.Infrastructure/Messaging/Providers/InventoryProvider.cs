@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OrderFlow.Inventory.Application.Abstractions.Messaging;
-using OrderFlow.Inventory.Application.Constants;
 using OrderFlow.Inventory.Domain.Entities;
 using OrderFlow.Inventory.Infrastructure.Persistence;
 
@@ -46,9 +45,9 @@ public class InventoryProvider(IServiceProvider serviceProvider, IEventBus event
                     outboxMessage.Payload.RootElement.GetRawText());
 
                 outboxMessage.Publish();
-
-                await inventoryDbContext.SaveChangesAsync(stoppingToken);
             }
+
+            await inventoryDbContext.SaveChangesAsync(stoppingToken);
         }
     }
 

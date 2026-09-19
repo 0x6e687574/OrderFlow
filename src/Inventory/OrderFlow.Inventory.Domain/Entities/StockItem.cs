@@ -25,7 +25,7 @@ public sealed class StockItem
         get;
         private set
         {
-            if (IsInBoundary(value))
+            if (!IsInBoundary(value))
             {
                 throw new InvalidQuantityReservedException();
             }

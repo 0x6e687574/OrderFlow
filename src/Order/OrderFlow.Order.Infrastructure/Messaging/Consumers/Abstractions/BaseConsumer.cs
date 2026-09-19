@@ -3,13 +3,17 @@ using DotPulsar;
 using DotPulsar.Abstractions;
 using DotPulsar.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using OrderFlow.Order.Application.Constants;
 using OrderFlow.Order.Application.Events.Abstractions;
 using OrderFlow.Order.Infrastructure.Exceptions;
 
 namespace OrderFlow.Order.Infrastructure.Messaging.Consumers.Abstractions;
 
-public abstract class BaseConsumer<T>(IPulsarClient client) : BackgroundService
+public abstract class BaseConsumer<T>(
+    IPulsarClient client,
+    ILogger logger)
+    : BackgroundService
     where T : BaseEvent
 {
     private const int MaxRetryAttempts = 3;
@@ -37,13 +41,13 @@ public abstract class BaseConsumer<T>(IPulsarClient client) : BackgroundService
             try
             {
                 var payload = JsonSerializer.Deserialize<T>(message.Value())
-                    ?? throw new DeserializeFailedException();
+                              ?? throw new DeserializeFailedException();
 
                 await HandleAsync(payload, stoppingToken);
 
                 await consumer.Acknowledge(message, stoppingToken);
             }
-            catch
+            catch (Exception ex)
             {
                 if (!CanRetry(message.RedeliveryCount))
                 {
@@ -54,6 +58,8 @@ public abstract class BaseConsumer<T>(IPulsarClient client) : BackgroundService
 
                     await consumer.Acknowledge(message, stoppingToken);
                 }
+
+                logger.LogError(ex, "An error occurred while processing a message!");
             }
         }
     }

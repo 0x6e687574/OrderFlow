@@ -38,6 +38,8 @@ public class OrderProvider(IServiceProvider serviceProvider, IEventBus eventBus)
                 continue;
             }
 
+            var publishedOutboxMessages = new List<OutboxMessage>();
+
             foreach (var outboxMessage in outboxMessages)
             {
                 await eventBus.PublishAsync(
@@ -47,8 +49,23 @@ public class OrderProvider(IServiceProvider serviceProvider, IEventBus eventBus)
 
                 outboxMessage.Publish();
 
-                await orderDbContext.SaveChangesAsync(stoppingToken);
+                publishedOutboxMessages.Add(outboxMessage);
             }
+
+            var publishedOrderIds = publishedOutboxMessages
+                .Select(p => p.CorrelationId)
+                .ToHashSet();
+
+            var publishedOrders = await orderDbContext.Orders
+                .Where(o => publishedOrderIds.Contains(o.Id))
+                .ToHashSetAsync(stoppingToken);
+
+            foreach (var publishedOrder in publishedOrders)
+            {
+                publishedOrder.Reserve();
+            }
+
+            await orderDbContext.SaveChangesAsync(stoppingToken);
         }
     }
 

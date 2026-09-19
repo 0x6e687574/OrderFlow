@@ -9,10 +9,10 @@ public sealed class InboxMessage
     {
     }
 
-    public static InboxMessage Create(Guid eventId, DateTime processedAt)
+    public static InboxMessage Create(Guid eventId)
         => new()
         {
             EventId = eventId,
-            ProcessedAt = processedAt
+            ProcessedAt = DateTime.UtcNow
         };
 }

@@ -8,6 +8,7 @@ using OrderFlow.Order.Application.Abstractions.Repositories;
 using OrderFlow.Order.Application.Abstractions.UnitOfWorks;
 using OrderFlow.Order.Infrastructure.HealthChecks;
 using OrderFlow.Order.Infrastructure.Messaging;
+using OrderFlow.Order.Infrastructure.Messaging.Consumers;
 using OrderFlow.Order.Infrastructure.Messaging.Providers;
 using OrderFlow.Order.Infrastructure.Persistence;
 using OrderFlow.Order.Infrastructure.Persistence.Repositories;
@@ -28,7 +29,7 @@ public static class DependencyInjection
             .Builder()
             .ServiceUrl(new Uri(configuration["Pulsar:ServiceUrl"]!))
             .Build());
-        
+
         services.AddSingleton<IEventBus, PulsarEventBus>();
 
         services.AddScoped<IOrderRepository, OrderRepository>();
@@ -37,8 +38,11 @@ public static class DependencyInjection
 
         services.AddHostedService<OrderProvider>();
 
+        services.AddHostedService<ReservationFailedConsumer>();
+        services.AddHostedService<ReservationSucceededConsumer>();
+
         services.AddHttpClient();
-        
+
         services.AddHealthChecks()
             .AddNpgSql(
                 connectionString: configuration.GetConnectionString("DefaultConnection")!,
@@ -47,7 +51,7 @@ public static class DependencyInjection
             .AddCheck<PulsarHealthCheck>(
                 name: "pulsar",
                 failureStatus: HealthStatus.Unhealthy);
-        
+
         return services;
     }
 }

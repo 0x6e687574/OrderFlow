@@ -11,9 +11,16 @@ public class OrderPlacedHandler(InventoryDbContext inventoryDbContext)
 {
     public async Task HandleAsync(OrderPlacedEvent payload, CancellationToken cancellationToken)
     {
+        if (await IsProcessed(payload.EventId, cancellationToken))
+        {
+            return;
+        }
+
         if (IsEmptyOrderLines(payload.OrderLines))
         {
             await HandleReservationFailedAsync(payload.OrderId, cancellationToken);
+            await MarkAsProcessedAsync(payload.EventId, cancellationToken);
+            await SaveChangesAsync(cancellationToken);
             return;
         }
 
@@ -29,6 +36,8 @@ public class OrderPlacedHandler(InventoryDbContext inventoryDbContext)
         if (HasInvalidSkus(stockItems, skus))
         {
             await HandleReservationFailedAsync(payload.OrderId, cancellationToken);
+            await MarkAsProcessedAsync(payload.EventId, cancellationToken);
+            await SaveChangesAsync(cancellationToken);
             return;
         }
 
@@ -39,6 +48,8 @@ public class OrderPlacedHandler(InventoryDbContext inventoryDbContext)
         if (!HasSufficientQuantities(payload.OrderLines, availableQuantities))
         {
             await HandleReservationFailedAsync(payload.OrderId, cancellationToken);
+            await MarkAsProcessedAsync(payload.EventId, cancellationToken);
+            await SaveChangesAsync(cancellationToken);
             return;
         }
 
@@ -54,6 +65,8 @@ public class OrderPlacedHandler(InventoryDbContext inventoryDbContext)
             payload.OrderId,
             payload.OrderLines,
             cancellationToken);
+        await MarkAsProcessedAsync(payload.EventId, cancellationToken);
+        await SaveChangesAsync(cancellationToken);
     }
 
     private static bool IsEmptyOrderLines(IReadOnlyCollection<OrderPlacedOrderLineEvent> orderLines)
@@ -99,8 +112,6 @@ public class OrderPlacedHandler(InventoryDbContext inventoryDbContext)
             @event.CreatedAt);
 
         await inventoryDbContext.OutboxMessages.AddAsync(outboxMessage, cancellationToken);
-
-        await inventoryDbContext.SaveChangesAsync(cancellationToken);
     }
 
     private async Task HandleReservationSucceededAsync(
@@ -133,7 +144,7 @@ public class OrderPlacedHandler(InventoryDbContext inventoryDbContext)
         await inventoryDbContext.SaveChangesAsync(cancellationToken);
     }
 
-    private void IncreaseQuantityReserved(
+    private static void IncreaseQuantityReserved(
         HashSet<StockItem> stockItems,
         Dictionary<string, int> reservedQuantities)
     {
@@ -142,4 +153,20 @@ public class OrderPlacedHandler(InventoryDbContext inventoryDbContext)
             stockItem.Reserve(reservedQuantities[stockItem.Sku]);
         }
     }
+
+    private Task<bool> IsProcessed(Guid eventId, CancellationToken cancellationToken)
+        => inventoryDbContext.InboxMessages
+            .AnyAsync(
+                im => im.EventId == eventId,
+                cancellationToken);
+
+    private async Task MarkAsProcessedAsync(Guid eventId, CancellationToken cancellationToken)
+    {
+        var inboxMessage = InboxMessage.Create(eventId);
+
+        await inventoryDbContext.InboxMessages.AddAsync(inboxMessage, cancellationToken);
+    }
+
+    private Task SaveChangesAsync(CancellationToken cancellationToken)
+        => inventoryDbContext.SaveChangesAsync(cancellationToken);
 }

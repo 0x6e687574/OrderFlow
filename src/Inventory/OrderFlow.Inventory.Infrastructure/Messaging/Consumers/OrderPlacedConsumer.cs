@@ -1,5 +1,6 @@
 ﻿using DotPulsar.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using OrderFlow.Inventory.Application.Constants;
 using OrderFlow.Inventory.Application.Events;
 using OrderFlow.Inventory.Infrastructure.Messaging.Consumers.Abstractions;
@@ -10,15 +11,16 @@ namespace OrderFlow.Inventory.Infrastructure.Messaging.Consumers;
 
 public class OrderPlacedConsumer(
     IServiceProvider serviceProvider,
-    IPulsarClient client)
-    : BaseConsumer<OrderPlacedEvent>(client)
+    IPulsarClient client,
+    ILogger<OrderPlacedConsumer> logger)
+    : BaseConsumer<OrderPlacedEvent>(client, logger)
 {
     protected override string Topic => TopicName.OrderPlaced;
     protected override string Subscription => SubscriptionName.InventoryService;
 
     protected override async Task HandleAsync(OrderPlacedEvent payload, CancellationToken cancellationToken)
     {
-        var scope = serviceProvider.CreateScope();
+        using var scope = serviceProvider.CreateScope();
 
         await using var inventoryDbContext = scope
             .ServiceProvider
