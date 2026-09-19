@@ -58,8 +58,12 @@ public abstract class BaseConsumer<T>(
 
                     await consumer.Acknowledge(message, stoppingToken);
                 }
+                else
+                {
+                    logger.LogError(ex, "An error occurred while processing a message!");
 
-                logger.LogError(ex, "An error occurred while processing a message!");
+                    await consumer.RedeliverUnacknowledgedMessages([message.MessageId], stoppingToken);
+                }
             }
         }
     }
