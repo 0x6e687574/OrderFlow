@@ -5,6 +5,8 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <UserSecretsId>0159b778-408d-41dd-a85f-4d12a7560017</UserSecretsId>
+        <Description>OrderFlow Inventory API</Description>
     </PropertyGroup>
 
     <ItemGroup>

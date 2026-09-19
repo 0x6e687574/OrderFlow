@@ -14,4 +14,7 @@ public class StockItemRepository(InventoryDbContext inventoryDbContext) : IStock
 
     public async Task<IReadOnlyCollection<StockItem>> GetAllAsync()
         => await inventoryDbContext.StockItems.ToListAsync();
+
+    public async Task<bool> ExistsAsync(string sku)
+        => await inventoryDbContext.StockItems.AnyAsync(si => si.Sku == sku);
 }

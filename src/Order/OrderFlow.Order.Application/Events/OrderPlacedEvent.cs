@@ -2,7 +2,7 @@
 
 namespace OrderFlow.Order.Application.Events;
 
-public sealed class OrderPlacedEvent :  BaseEvent
+public sealed class OrderPlacedEvent : BaseEvent
 {
     public Guid OrderId { get; set; }
     public string CustomerId { get; set; } = null!;

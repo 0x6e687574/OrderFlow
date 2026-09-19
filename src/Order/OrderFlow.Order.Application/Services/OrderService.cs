@@ -50,9 +50,11 @@ public class OrderService(IUnitOfWork unitOfWork) : IOrderService
         };
 
         var outboxMessage = OutboxMessage.Create(
+            @event.EventId,
             TopicName.OrderPlaced,
             JsonSerializer.SerializeToDocument(@event),
-            order.Id);
+            order.Id,
+            @event.CreatedAt);
 
         await unitOfWork.OutboxMessages.AddAsync(outboxMessage);
 

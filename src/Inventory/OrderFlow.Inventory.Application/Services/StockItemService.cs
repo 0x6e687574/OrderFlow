@@ -1,6 +1,7 @@
 ﻿using OrderFlow.Inventory.Application.Abstractions.Services;
 using OrderFlow.Inventory.Application.Abstractions.UnitOfWorks;
 using OrderFlow.Inventory.Application.Dtos;
+using OrderFlow.Inventory.Application.Exceptions;
 using OrderFlow.Inventory.Domain.Entities;
 
 namespace OrderFlow.Inventory.Application.Services;
@@ -9,6 +10,11 @@ public class StockItemService(IUnitOfWork unitOfWork) : IStockItemService
 {
     public async Task<CreateStockItemResponseDto> CreateAsync(CreateStockItemDto dto)
     {
+        if (await IsStockItemExisted(dto.Sku))
+        {
+            throw new DuplicatedStockItemsException();
+        }
+
         var stockItem = StockItem.Create(dto.Sku, dto.Quantity);
 
         await unitOfWork.StockItems.AddAsync(stockItem);
@@ -69,6 +75,9 @@ public class StockItemService(IUnitOfWork unitOfWork) : IStockItemService
 
         return response;
     }
+
+    private Task<bool> IsStockItemExisted(string sku)
+        => unitOfWork.StockItems.ExistsAsync(sku);
 
     private static bool CanAdjustStockItem(StockItem stockItem, int newQuantity)
         => newQuantity >= stockItem.QuantityOnHand - stockItem.QuantityReserved;

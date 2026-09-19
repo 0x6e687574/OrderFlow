@@ -17,16 +17,18 @@ public sealed class OutboxMessage
     }
 
     public static OutboxMessage Create(
+        Guid eventId,
         string topic,
         JsonDocument payload,
-        Guid correlationId)
+        Guid correlationId,
+        DateTime createdAt)
         => new()
         {
-            EventId = Guid.NewGuid(),
+            EventId = eventId,
             Topic = topic,
             Payload = payload,
             CorrelationId = correlationId,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = createdAt
         };
 
     public void Publish() => PublishedAt = DateTime.UtcNow;
