@@ -10,20 +10,20 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Asp.Versioning.Http" Version="10.2.3" />
-        <PackageReference Include="Asp.Versioning.Mvc" Version="10.2.1" />
-        <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="10.2.1" />
-        <PackageReference Include="Asp.Versioning.OpenApi" Version="10.2.3" />
-        <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
-        <PackageReference Include="AutoMapper" Version="16.2.0" />
-        <PackageReference Include="FluentValidation" Version="12.1.1" />
-        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
+        <PackageReference Include="Asp.Versioning.Http" Version="10.2.3"/>
+        <PackageReference Include="Asp.Versioning.Mvc" Version="10.2.1"/>
+        <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="10.2.1"/>
+        <PackageReference Include="Asp.Versioning.OpenApi" Version="10.2.3"/>
+        <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0"/>
+        <PackageReference Include="AutoMapper" Version="16.2.0"/>
+        <PackageReference Include="FluentValidation" Version="12.1.1"/>
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1"/>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.3">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Scalar.AspNetCore" Version="2.17.3" />
+        <PackageReference Include="Scalar.AspNetCore" Version="2.17.3"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -33,8 +33,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\OrderFlow.Order.Application\OrderFlow.Order.Application.csproj" />
-      <ProjectReference Include="..\OrderFlow.Order.Infrastructure\OrderFlow.Order.Infrastructure.csproj" />
+        <ProjectReference Include="..\OrderFlow.Order.Application\OrderFlow.Order.Application.csproj"/>
+        <ProjectReference Include="..\OrderFlow.Order.Infrastructure\OrderFlow.Order.Infrastructure.csproj"/>
     </ItemGroup>
 
 </Project>
