@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using OrderFlow.Payment.Domain.Exceptions;
 
 namespace OrderFlow.Payment.Domain.Entities;
 
@@ -9,6 +8,7 @@ public sealed class OutboxMessage
     public Guid EventId { get; private set; }
     public string Topic { get; private set; } = null!;
     public JsonDocument Payload { get; private set; } = null!;
+    public Guid CorrelationId { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime? PublishedAt { get; private set; }
 
@@ -16,22 +16,20 @@ public sealed class OutboxMessage
     {
     }
 
-    public static OutboxMessage Create(Guid eventId, string topic, JsonDocument payload)
+    public static OutboxMessage Create(
+        Guid eventId,
+        string topic,
+        JsonDocument payload,
+        Guid correlationId,
+        DateTime createdAt)
         => new()
         {
             EventId = eventId,
             Topic = topic,
             Payload = payload,
-            CreatedAt = DateTime.UtcNow
+            CorrelationId = correlationId,
+            CreatedAt = createdAt
         };
 
-    public void Update(DateTime publishedAt)
-    {
-        if (publishedAt <= CreatedAt)
-        {
-            throw new InvalidDateTimeException();
-        }
-
-        PublishedAt = publishedAt;
-    }
+    public void Publish() => PublishedAt = DateTime.UtcNow;
 }
