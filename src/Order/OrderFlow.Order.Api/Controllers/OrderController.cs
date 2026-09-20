@@ -46,16 +46,11 @@ public class OrderController(IOrderService orderService, IMapper mapper) : Contr
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetById([FromQuery] string customerId)
+    public async Task<IActionResult> GetByCustomerId([FromQuery] string customerId)
     {
-        var responseDto = await orderService.GetByCustomerIdAsync(customerId);
+        var responseDto = await orderService.GetAllByCustomerIdAsync(customerId);
 
-        if (responseDto is null)
-        {
-            return NotFound();
-        }
-
-        var response = mapper.Map<GetByCustomerIdResponse>(responseDto);
+        var response = mapper.Map<IEnumerable<GetByCustomerIdResponse>>(responseDto);
 
         return Ok(response);
     }

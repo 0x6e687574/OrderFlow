@@ -6,5 +6,5 @@ public interface IOrderRepository
 {
     public Task AddAsync(Order order);
     public Task<Order?> GetByIdAsync(Guid orderId);
-    public Task<Order?> GetByCustomerIdAsync(string customerId);
+    public Task<IReadOnlyCollection<Order>> GetAllByCustomerIdAsync(string customerId);
 }

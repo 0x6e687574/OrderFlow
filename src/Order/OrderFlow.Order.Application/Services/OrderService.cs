@@ -103,22 +103,18 @@ public class OrderService(IUnitOfWork unitOfWork) : IOrderService
         return response;
     }
 
-    public async Task<GetByCustomerIdResponseDto?> GetByCustomerIdAsync(string customerId)
+    public async Task<IEnumerable<GetByCustomerIdResponseDto>> GetAllByCustomerIdAsync(string customerId)
     {
-        var order = await unitOfWork.Orders.GetByCustomerIdAsync(customerId);
+        var orders = await unitOfWork.Orders.GetAllByCustomerIdAsync(customerId);
 
-        if (order is null)
-        {
-            return null;
-        }
-
-        var response = new GetByCustomerIdResponseDto()
-        {
-            OrderId = order.Id,
-            Status = order.Status.ToString(),
-            TotalAmount = order.TotalAmount,
-            CreatedAt = order.CreatedAt
-        };
+        var response = orders
+            .Select(o => new GetByCustomerIdResponseDto()
+            {
+                OrderId = o.Id,
+                Status = o.Status.ToString(),
+                TotalAmount = o.TotalAmount,
+                CreatedAt = o.CreatedAt
+            });
 
         return response;
     }

@@ -18,9 +18,10 @@ public class OrderRepository(OrderDbContext orderDbContext) : IOrderRepository
             .Include(o => o.OrderSagaState)
             .FirstOrDefaultAsync(o => o.Id == orderId);
 
-    public async Task<Order?> GetByCustomerIdAsync(string customerId)
+    public async Task<IReadOnlyCollection<Order>> GetAllByCustomerIdAsync(string customerId)
         => await orderDbContext
             .Orders
             .AsNoTracking()
-            .FirstOrDefaultAsync(o => o.CustomerId == customerId);
+            .Where(o => o.CustomerId == customerId)
+            .ToListAsync();
 }
