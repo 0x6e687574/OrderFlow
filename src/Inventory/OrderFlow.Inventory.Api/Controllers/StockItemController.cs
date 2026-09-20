@@ -29,4 +29,40 @@ public class StockItemController(IStockItemService stockItemService, IMapper map
 
         return Accepted(response);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var responseDto = await stockItemService.GetAllAsync();
+
+        var response = mapper.Map<IEnumerable<GetStockItemResponse>>(responseDto);
+
+        return Ok(response);
+    }
+
+    [HttpPost("{sku}/adjust")]
+    public async Task<IActionResult> Adjust(
+        [FromRoute] string sku,
+        [FromBody] AdjustStockItemRequest request,
+        [FromServices] IValidator<AdjustStockItemRequest> validator)
+    {
+        await validator.ValidateAndThrowAsync(request);
+
+        var dto = new AdjustStockItemDto
+        {
+            Sku = sku,
+            Quantity = request.Quantity
+        };
+
+        var responseDto = await stockItemService.AdjustAsync(dto);
+
+        if (responseDto is null)
+        {
+            return BadRequest();
+        }
+
+        var response = mapper.Map<AdjustStockItemResponse>(responseDto);
+
+        return Ok(response);
+    }
 }

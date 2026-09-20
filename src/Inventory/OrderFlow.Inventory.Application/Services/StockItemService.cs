@@ -56,7 +56,7 @@ public class StockItemService(IUnitOfWork unitOfWork) : IStockItemService
             return null;
         }
 
-        if (!CanAdjustStockItem(stockItem, dto.Quantity))
+        if (!CanAdjustStockItem(dto.Quantity, stockItem.QuantityReserved))
         {
             return null;
         }
@@ -79,6 +79,6 @@ public class StockItemService(IUnitOfWork unitOfWork) : IStockItemService
     private Task<bool> IsStockItemExisted(string sku)
         => unitOfWork.StockItems.ExistsAsync(sku);
 
-    private static bool CanAdjustStockItem(StockItem stockItem, int newQuantity)
-        => newQuantity >= stockItem.QuantityOnHand - stockItem.QuantityReserved;
+    private static bool CanAdjustStockItem(int newQuantity, int quantityReserved)
+        => newQuantity >= quantityReserved;
 }

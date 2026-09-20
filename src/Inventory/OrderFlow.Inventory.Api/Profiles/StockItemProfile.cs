@@ -11,5 +11,9 @@ public class StockItemProfile : Profile
     {
         CreateMap<CreateStockItemRequest, CreateStockItemDto>();
         CreateMap<CreateStockItemResponseDto, CreateStockItemResponse>();
+
+        CreateMap<GetStockItemResponseDto, GetStockItemResponse>();
+
+        CreateMap<AdjustStockItemResponseDto, AdjustStockItemResponse>();
     }
 }
