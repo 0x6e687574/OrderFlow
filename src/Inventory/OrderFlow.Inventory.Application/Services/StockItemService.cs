@@ -76,8 +76,8 @@ public class StockItemService(IUnitOfWork unitOfWork) : IStockItemService
         return response;
     }
 
-    private Task<bool> IsStockItemExisted(string sku)
-        => unitOfWork.StockItems.ExistsAsync(sku);
+    private async Task<bool> IsStockItemExisted(string sku)
+        => await unitOfWork.StockItems.ExistsAsync(sku);
 
     private static bool CanAdjustStockItem(int newQuantity, int quantityReserved)
         => newQuantity >= quantityReserved;

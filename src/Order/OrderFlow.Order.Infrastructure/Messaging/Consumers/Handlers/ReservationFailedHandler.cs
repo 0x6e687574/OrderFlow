@@ -32,8 +32,8 @@ public class ReservationFailedHandler(OrderDbContext orderDbContext)
         await SaveChangesAsync(cancellationToken);
     }
 
-    private Task<bool> IsProcessed(Guid eventId, CancellationToken cancellationToken)
-        => orderDbContext.InboxMessages
+    private async Task<bool> IsProcessed(Guid eventId, CancellationToken cancellationToken)
+        => await orderDbContext.InboxMessages
             .AnyAsync(
                 im => im.EventId == eventId,
                 cancellationToken);
@@ -45,6 +45,6 @@ public class ReservationFailedHandler(OrderDbContext orderDbContext)
         await orderDbContext.InboxMessages.AddAsync(inboxMessage, cancellationToken);
     }
 
-    private Task SaveChangesAsync(CancellationToken cancellationToken)
-        => orderDbContext.SaveChangesAsync(cancellationToken);
+    private async Task SaveChangesAsync(CancellationToken cancellationToken)
+        => await orderDbContext.SaveChangesAsync(cancellationToken);
 }

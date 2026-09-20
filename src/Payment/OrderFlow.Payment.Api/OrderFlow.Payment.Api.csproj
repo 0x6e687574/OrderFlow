@@ -5,10 +5,25 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <UserSecretsId>51baa58b-919e-4a5b-ac8f-f0d59ce42144</UserSecretsId>
+        <Description>OrderFlow Payment API</Description>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.11"/>
+        <PackageReference Include="Asp.Versioning.Http" Version="10.2.3"/>
+        <PackageReference Include="Asp.Versioning.Mvc" Version="10.2.1"/>
+        <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="10.2.1"/>
+        <PackageReference Include="Asp.Versioning.OpenApi" Version="10.2.3"/>
+        <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0"/>
+        <PackageReference Include="AutoMapper" Version="16.2.0"/>
+        <PackageReference Include="FluentValidation" Version="12.1.1"/>
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1"/>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.3">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Scalar.AspNetCore" Version="2.17.3"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -18,8 +33,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\OrderFlow.Payment.Application\OrderFlow.Payment.Application.csproj" />
-      <ProjectReference Include="..\OrderFlow.Payment.Infrastructure\OrderFlow.Payment.Infrastructure.csproj" />
+        <ProjectReference Include="..\OrderFlow.Payment.Application\OrderFlow.Payment.Application.csproj"/>
+        <ProjectReference Include="..\OrderFlow.Payment.Infrastructure\OrderFlow.Payment.Infrastructure.csproj"/>
     </ItemGroup>
 
 </Project>

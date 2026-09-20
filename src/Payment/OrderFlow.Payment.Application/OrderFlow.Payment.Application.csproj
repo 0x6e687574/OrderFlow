@@ -7,7 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\OrderFlow.Payment.Domain\OrderFlow.Payment.Domain.csproj" />
+        <ProjectReference Include="..\OrderFlow.Payment.Domain\OrderFlow.Payment.Domain.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.12"/>
     </ItemGroup>
 
 </Project>

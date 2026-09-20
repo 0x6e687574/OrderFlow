@@ -140,8 +140,6 @@ public class OrderPlacedHandler(InventoryDbContext inventoryDbContext)
             @event.CreatedAt);
 
         await inventoryDbContext.OutboxMessages.AddAsync(outboxMessage, cancellationToken);
-
-        await inventoryDbContext.SaveChangesAsync(cancellationToken);
     }
 
     private static void IncreaseQuantityReserved(
@@ -154,8 +152,8 @@ public class OrderPlacedHandler(InventoryDbContext inventoryDbContext)
         }
     }
 
-    private Task<bool> IsProcessed(Guid eventId, CancellationToken cancellationToken)
-        => inventoryDbContext.InboxMessages
+    private async Task<bool> IsProcessed(Guid eventId, CancellationToken cancellationToken)
+        => await inventoryDbContext.InboxMessages
             .AnyAsync(
                 im => im.EventId == eventId,
                 cancellationToken);
@@ -167,6 +165,6 @@ public class OrderPlacedHandler(InventoryDbContext inventoryDbContext)
         await inventoryDbContext.InboxMessages.AddAsync(inboxMessage, cancellationToken);
     }
 
-    private Task SaveChangesAsync(CancellationToken cancellationToken)
-        => inventoryDbContext.SaveChangesAsync(cancellationToken);
+    private async Task SaveChangesAsync(CancellationToken cancellationToken)
+        => await inventoryDbContext.SaveChangesAsync(cancellationToken);
 }
