@@ -40,6 +40,8 @@ public static class DependencyInjection
 
         services.AddHostedService<ReservationFailedConsumer>();
         services.AddHostedService<ReservationSucceededConsumer>();
+        services.AddHostedService<PaymentFailedConsumer>();
+        services.AddHostedService<PaymentSucceededConsumer>();
 
         services.AddHttpClient();
 
