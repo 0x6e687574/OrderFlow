@@ -39,6 +39,8 @@ public static class DependencyInjection
         services.AddHostedService<InventoryProvider>();
 
         services.AddHostedService<OrderPlacedConsumer>();
+        services.AddHostedService<PaymentFailedConsumer>();
+        services.AddHostedService<PaymentSucceededConsumer>();
 
         services.AddHttpClient();
 
