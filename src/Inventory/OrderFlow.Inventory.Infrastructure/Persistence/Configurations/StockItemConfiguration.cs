@@ -15,5 +15,8 @@ public class StockItemConfiguration : IEntityTypeConfiguration<StockItem>
         builder.Property(e => e.Sku)
             .HasMaxLength(50)
             .IsRequired();
+
+        builder.Property(e => e.Version)
+            .IsRowVersion();
     }
 }

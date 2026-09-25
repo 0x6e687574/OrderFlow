@@ -11,7 +11,7 @@ public sealed class StockItem
         get;
         private set
         {
-            if (value <= 0)
+            if (value < 0)
             {
                 throw new InvalidQuantityOnHandException();
             }
@@ -33,6 +33,8 @@ public sealed class StockItem
             field = value;
         }
     }
+
+    public uint Version { get; private set; }
 
     private StockItem()
     {

@@ -24,49 +24,59 @@ public class OrderPlacedHandler(InventoryDbContext inventoryDbContext)
             return;
         }
 
-        var skus = payload.OrderLines
-            .Select(ol => ol.Sku)
-            .ToHashSet();
-
-        var stockItems = await inventoryDbContext
-            .StockItems
-            .Where((si => skus.Contains(si.Sku)))
-            .ToHashSetAsync(cancellationToken);
-
-        if (HasInvalidSkus(stockItems, skus))
+        try
         {
+            var skus = payload.OrderLines
+                .Select(ol => ol.Sku)
+                .ToHashSet();
+
+            var stockItems = await inventoryDbContext
+                .StockItems
+                .Where((si => skus.Contains(si.Sku)))
+                .ToHashSetAsync(cancellationToken);
+
+            if (HasInvalidSkus(stockItems, skus))
+            {
+                await HandleReservationFailedAsync(payload.OrderId, cancellationToken);
+                await MarkAsProcessedAsync(payload.EventId, cancellationToken);
+                await SaveChangesAsync(cancellationToken);
+                return;
+            }
+
+            var availableQuantities = stockItems.ToDictionary(
+                si => si.Sku,
+                si => si.QuantityOnHand - si.QuantityReserved);
+
+            if (!HasSufficientQuantities(payload.OrderLines, availableQuantities))
+            {
+                await HandleReservationFailedAsync(payload.OrderId, cancellationToken);
+                await MarkAsProcessedAsync(payload.EventId, cancellationToken);
+                await SaveChangesAsync(cancellationToken);
+                return;
+            }
+
+            await MakeReservations(payload.OrderId, payload.OrderLines, cancellationToken);
+
+            var reservedQuantities = payload.OrderLines.ToDictionary(
+                ol => ol.Sku,
+                ol => ol.Quantity);
+
+            IncreaseQuantityReserved(stockItems, reservedQuantities);
+
+            await HandleReservationSucceededAsync(
+                payload.OrderId,
+                payload.OrderLines,
+                cancellationToken);
+            await MarkAsProcessedAsync(payload.EventId, cancellationToken);
+            await SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            inventoryDbContext.ChangeTracker.Clear();
             await HandleReservationFailedAsync(payload.OrderId, cancellationToken);
             await MarkAsProcessedAsync(payload.EventId, cancellationToken);
             await SaveChangesAsync(cancellationToken);
-            return;
         }
-
-        var availableQuantities = stockItems.ToDictionary(
-            si => si.Sku,
-            si => si.QuantityOnHand - si.QuantityReserved);
-
-        if (!HasSufficientQuantities(payload.OrderLines, availableQuantities))
-        {
-            await HandleReservationFailedAsync(payload.OrderId, cancellationToken);
-            await MarkAsProcessedAsync(payload.EventId, cancellationToken);
-            await SaveChangesAsync(cancellationToken);
-            return;
-        }
-
-        await MakeReservations(payload.OrderId, payload.OrderLines, cancellationToken);
-
-        var reservedQuantities = payload.OrderLines.ToDictionary(
-            ol => ol.Sku,
-            ol => ol.Quantity);
-
-        IncreaseQuantityReserved(stockItems, reservedQuantities);
-
-        await HandleReservationSucceededAsync(
-            payload.OrderId,
-            payload.OrderLines,
-            cancellationToken);
-        await MarkAsProcessedAsync(payload.EventId, cancellationToken);
-        await SaveChangesAsync(cancellationToken);
     }
 
     private static bool IsEmptyOrderLines(IReadOnlyCollection<OrderPlacedOrderLineEvent> orderLines)
