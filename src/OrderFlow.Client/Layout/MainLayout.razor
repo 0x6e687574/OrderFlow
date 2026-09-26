@@ -1,16 +1,27 @@
 ﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
-        <NavMenu/>
-    </div>
+@layout TelerikLayout
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+<TelerikAppBar>
+    <AppBarSection>
+        <a href="/">OrderFlow</a>
+    </AppBarSection>
+    
+    <AppBarSpacer></AppBarSpacer>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+    <AppBarSection>
+        <a href="/place-order">Place order</a>
+    </AppBarSection>
+
+    <AppBarSection>
+        <a href="/dashboard">Dashboard</a>
+    </AppBarSection>
+
+    <AppBarSpacer></AppBarSpacer>
+
+</TelerikAppBar>
+
+<TelerikStackLayout Orientation="@StackLayoutOrientation.Vertical"
+                    Width="100%"
+                    Height="100%">
+    @Body
+</TelerikStackLayout>
