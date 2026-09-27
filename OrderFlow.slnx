@@ -1,6 +1,7 @@
 <Solution>
     <Folder Name="/Solution Items/">
         <File Path="compose.yaml" />
+        <File Path="db/init-db.sql" />
     </Folder>
     <Folder Name="/src/">
         <Project Path="src/OrderFlow.Client/OrderFlow.Client.csproj" />

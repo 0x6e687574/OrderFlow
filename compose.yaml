@@ -1,19 +1,121 @@
 ﻿services:
-  orderflow.order.api:
-    image: orderflow.order.api
+  postgres:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./db/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - orderflow-net
+
+  pulsar:
+    image: apachepulsar/pulsar:3.2.1
+    restart: always
+    entrypoint: /bin/bash -c "bin/pulsar standalone"
+    volumes:
+      - pulsar-data:/pulsar/data
+    ports:
+      - "6650:6650"
+      - "8080:8080"
+    healthcheck:
+      test: [ "CMD", "bin/pulsar-admin", "brokers", "healthcheck" ]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    networks:
+      - orderflow-net
+
+  order-api:
     build:
       context: .
       dockerfile: src/Order/OrderFlow.Order.Api/Dockerfile
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      pulsar:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: "http://+:8080"
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=orderflow_orders;Username=postgres;Password=postgres"
+      Pulsar__ServiceUrl: "pulsar://pulsar:6650"
+      Pulsar__AdminUrl: "http://pulsar:8080"
+    ports:
+      - "5001:8080"
+    networks:
+      - orderflow-net
 
-  orderflow.inventory.api:
-    image: orderflow.inventory.api
+  inventory-api:
     build:
       context: .
       dockerfile: src/Inventory/OrderFlow.Inventory.Api/Dockerfile
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      pulsar:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: "http://+:8080"
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=orderflow_inventory;Username=postgres;Password=postgres"
+      Pulsar__ServiceUrl: "pulsar://pulsar:6650"
+      Pulsar__AdminUrl: "http://pulsar:8080"
+    ports:
+      - "5002:8080"
+    networks:
+      - orderflow-net
 
-  orderflow.payment.api:
-    image: orderflow.payment.api
+  payment-api:
     build:
       context: .
       dockerfile: src/Payment/OrderFlow.Payment.Api/Dockerfile
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      pulsar:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: "http://+:8080"
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=orderflow_payments;Username=postgres;Password=postgres"
+      Pulsar__ServiceUrl: "pulsar://pulsar:6650"
+      Pulsar__AdminUrl: "http://pulsar:8080"
+    ports:
+      - "5003:8080"
+    networks:
+      - orderflow-net
 
+  client:
+    build:
+      context: .
+      dockerfile: src/OrderFlow.Client/Dockerfile
+    restart: always
+    depends_on:
+      - order-api
+      - inventory-api
+      - payment-api
+    ports:
+      - "5000:80"
+    networks:
+      - orderflow-net
+
+volumes:
+  postgres-data:
+  pulsar-data:
+
+networks:
+  orderflow-net:
+    driver: bridge
