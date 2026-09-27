@@ -7,4 +7,5 @@ public interface IOrderService
     public Task<CreateOrderResponseDto> CreateAsync(CreateOrderDto dto);
     public Task<GetByIdResponseDto?> GetByIdAsync(Guid orderId);
     public Task<IEnumerable<GetByCustomerIdResponseDto>> GetAllByCustomerIdAsync(string customerId);
+    public Task<IEnumerable<GetRecentOrderResponseDto>> GetRecentAsync();
 }

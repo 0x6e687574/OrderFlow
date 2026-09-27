@@ -17,5 +17,7 @@ public class OrderProfile : Profile
         CreateMap<GetByIdOrderLineResponseDto, GetByIdOrderLineResponse>();
 
         CreateMap<GetByCustomerIdResponseDto, GetByCustomerIdResponse>();
+
+        CreateMap<GetRecentOrderResponseDto, GetRecentOrderResponse>();
     }
 }

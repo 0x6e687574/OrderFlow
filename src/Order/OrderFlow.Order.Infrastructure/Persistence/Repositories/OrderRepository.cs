@@ -7,6 +7,8 @@ using Order = Domain.Entities.Order;
 
 public class OrderRepository(OrderDbContext orderDbContext) : IOrderRepository
 {
+    private const int MaxRecent = 10;
+
     public async Task AddAsync(Order order)
         => await orderDbContext.Orders.AddAsync(order);
 
@@ -23,5 +25,13 @@ public class OrderRepository(OrderDbContext orderDbContext) : IOrderRepository
             .Orders
             .AsNoTracking()
             .Where(o => o.CustomerId == customerId)
+            .ToListAsync();
+
+    public async Task<IReadOnlyCollection<Order>> GetRecentAsync()
+        => await orderDbContext
+            .Orders
+            .AsNoTracking()
+            .OrderByDescending(o => o.UpdatedAt)
+            .Take(MaxRecent)
             .ToListAsync();
 }

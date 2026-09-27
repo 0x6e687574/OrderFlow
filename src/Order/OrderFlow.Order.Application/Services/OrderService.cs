@@ -118,4 +118,22 @@ public class OrderService(IUnitOfWork unitOfWork) : IOrderService
 
         return response;
     }
+
+    public async Task<IEnumerable<GetRecentOrderResponseDto>> GetRecentAsync()
+    {
+        var recentOrders = await unitOfWork.Orders.GetRecentAsync();
+
+        var response = recentOrders
+            .Select(ro => new GetRecentOrderResponseDto
+            {
+                OrderId = ro.Id,
+                CustomerId = ro.CustomerId,
+                Status = ro.Status.ToString(),
+                TotalAmount = ro.TotalAmount,
+                CreatedAt = ro.CreatedAt,
+                UpdatedAt = ro.UpdatedAt
+            });
+
+        return response;
+    }
 }

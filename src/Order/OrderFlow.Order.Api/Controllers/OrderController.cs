@@ -54,4 +54,14 @@ public class OrderController(IOrderService orderService, IMapper mapper) : Contr
 
         return Ok(response);
     }
+
+    [HttpGet("recent")]
+    public async Task<IActionResult> GetRecent()
+    {
+        var responseDto = await orderService.GetRecentAsync();
+
+        var response = mapper.Map<IEnumerable<GetRecentOrderResponse>>(responseDto);
+
+        return Ok(response);
+    }
 }
