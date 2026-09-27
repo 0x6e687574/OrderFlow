@@ -17,4 +17,8 @@ public class OrderClient(HttpClient httpClient) : IOrderClient
     public async Task<GetOrderByIdDto> GetOrderByIdAsync(Guid orderId)
         => await httpClient.GetFromJsonAsync<GetOrderByIdDto>($"orders/{orderId}")
            ?? throw new InvalidOperationException();
+
+    public async Task<IEnumerable<GetRecentOrderDto>> GetRecentOrdersAsync()
+        => await httpClient.GetFromJsonAsync<IEnumerable<GetRecentOrderDto>>("orders/recent")
+           ?? throw new InvalidOperationException();
 }

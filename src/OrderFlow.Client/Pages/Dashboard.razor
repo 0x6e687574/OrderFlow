@@ -1,3 +1,35 @@
 ﻿@page "/dashboard"
+@using OrderFlow.Client.Dtos.Inventory
+@using OrderFlow.Client.Dtos.Order
 
 <h1>Dashboard</h1>
+
+<hr/>
+
+<h1>Stock Items</h1>
+
+<TelerikGrid Data="@_stockItems"
+             FilterMode="@GridFilterMode.FilterRow">
+    <GridColumns>
+        <GridColumn Field="@nameof(StockItemDto.Sku)"/>
+        <GridColumn Field="@nameof(StockItemDto.QuantityOnHand)"/>
+        <GridColumn Field="@nameof(StockItemDto.QuantityReserved)"/>
+        <GridColumn Field="@nameof(StockItemDto.Available)"/>
+    </GridColumns>
+</TelerikGrid>
+
+<hr/>
+
+<h1>Recent Orders</h1>
+
+<TelerikGrid Data="@_recentOrders"
+             FilterMode="@GridFilterMode.FilterRow">
+    <GridColumns>
+        <GridColumn Field="@nameof(GetRecentOrderDto.OrderId)"/>
+        <GridColumn Field="@nameof(GetRecentOrderDto.CustomerId)"/>
+        <GridColumn Field="@nameof(GetRecentOrderDto.Status)"/>
+        <GridColumn Field="@nameof(GetRecentOrderDto.TotalAmount)"/>
+        <GridColumn Field="@nameof(GetRecentOrderDto.CreatedAt)"/>
+        <GridColumn Field="@nameof(GetRecentOrderDto.UpdatedAt)"/>
+    </GridColumns>
+</TelerikGrid>
