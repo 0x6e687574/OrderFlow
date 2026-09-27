@@ -1,3 +1,104 @@
 ﻿@page "/place-order"
+@using OrderFlow.Client.Dtos.Inventory
+@using OrderFlow.Client.Dtos.Order
 
 <h1>Place order</h1>
+
+<div style="display: flex">
+    <div style="flex: 1">
+        <TelerikForm Model="@_createOrderRequestDto"
+                     OnSubmit="@HandleOrder">
+            <FormItems>
+                <FormItem Field="@nameof(CreateOrderRequestDto.CustomerId)"
+                          LabelText="Customer ID">
+                </FormItem>
+
+                <FormItem>
+                    <Template>
+                        @foreach (var orderLine in _createOrderRequestDto.OrderLines)
+                        {
+                            <div style="display: flex; gap: 10px;">
+                                <label>SKU</label>
+                                <TelerikComboBox Data="@_stockItems"
+                                                 TextField="@nameof(StockItemDto.Sku)"
+                                                 ValueField="@nameof(StockItemDto.Sku)"
+                                                 @bind-Value="@orderLine.Sku">
+                                    <ComboBoxSettings>
+                                        <ComboBoxPopupSettings Height="auto"/>
+                                    </ComboBoxSettings>
+                                </TelerikComboBox>
+
+                                <label>Quantity</label>
+                                <TelerikNumericTextBox @bind-Value="@orderLine.Quantity"
+                                                       Min="1"/>
+
+                                <label>Price</label>
+                                <TelerikNumericTextBox @bind-Value="@orderLine.UnitPrice"
+                                                       Min="0"/>
+
+                                <TelerikButton OnClick="@(() => RemoveLine(orderLine))">
+                                    Remove
+                                </TelerikButton>
+                            </div>
+                        }
+
+                        <TelerikButton ButtonType="ButtonType.Button"
+                                       OnClick="@AddLine">
+                            + Add Order Line
+                        </TelerikButton>
+                    </Template>
+                </FormItem>
+            </FormItems>
+        </TelerikForm>
+    </div>
+
+    <div style="flex: 1">
+        @if (_showMessage)
+        {
+            @if (_createOrderResponseDto is null)
+            {
+                <p>Create order failed!</p>
+            }
+            else
+            {
+                <p>OrderId: @_createOrderResponseDto.OrderId</p>
+                <p>Status: @_createOrderResponseDto.Status</p>
+            }
+        }
+    </div>
+</div>
+
+<hr/>
+
+@if (_showMessage)
+{
+    <div>
+        <h1>Order Information</h1>
+
+        @if (_getOrderByIdDto is null)
+        {
+            <p>Get order information failed!</p>
+        }
+        else
+        {
+            <p>OrderId: @_getOrderByIdDto.OrderId</p>
+            <p>CustomerId: @_getOrderByIdDto.CustomerId</p>
+            <p>Status: @_getOrderByIdDto.Status</p>
+            <p>TotalAmount: @_getOrderByIdDto.TotalAmount</p>
+            <p>ReservationCompleted: @_getOrderByIdDto.ReservationCompleted</p>
+            <p>PaymentCompleted: @_getOrderByIdDto.PaymentCompleted</p>
+            <br/>
+
+            @foreach (var orderLine in _getOrderByIdDto.OrderLines)
+            {
+                <p>&emsp;SKU: @orderLine.Sku</p>
+                <p>&emsp;Quantity: @orderLine.Quantity</p>
+                <p>&emsp;Price: @orderLine.UnitPrice</p>
+                <br/>
+            }
+
+            <p>CreatedAt: @_getOrderByIdDto.CreatedAt</p>
+            <p>UpdatedAt: @_getOrderByIdDto.UpdatedAt</p>
+        }
+    </div>
+}
