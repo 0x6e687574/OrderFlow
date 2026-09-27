@@ -55,4 +55,13 @@ public static class DependencyInjection
 
         return services;
     }
+    
+    public static void ApplyMigrations(this IServiceProvider serviceProvider)
+    {
+        using var scope = serviceProvider.CreateScope();
+
+        var inventoryDbContext = scope.ServiceProvider.GetRequiredService<InventoryDbContext>();
+
+        inventoryDbContext.Database.Migrate();
+    }
 }

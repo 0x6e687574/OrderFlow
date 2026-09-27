@@ -8,6 +8,9 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/Inventory/OrderFlow.Inventory.Api/OrderFlow.Inventory.Api.csproj", "src/Inventory/OrderFlow.Inventory.Api/"]
+COPY ["src/Inventory/OrderFlow.Inventory.Application/OrderFlow.Inventory.Application.csproj", "src/Inventory/OrderFlow.Inventory.Application/"]
+COPY ["src/Inventory/OrderFlow.Inventory.Domain/OrderFlow.Inventory.Domain.csproj", "src/Inventory/OrderFlow.Inventory.Domain/"]
+COPY ["src/Inventory/OrderFlow.Inventory.Infrastructure/OrderFlow.Inventory.Infrastructure.csproj", "src/Inventory/OrderFlow.Inventory.Infrastructure/"]
 RUN dotnet restore "src/Inventory/OrderFlow.Inventory.Api/OrderFlow.Inventory.Api.csproj"
 COPY . .
 WORKDIR "/src/src/Inventory/OrderFlow.Inventory.Api"

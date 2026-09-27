@@ -8,6 +8,9 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/Order/OrderFlow.Order.Api/OrderFlow.Order.Api.csproj", "src/Order/OrderFlow.Order.Api/"]
+COPY ["src/Order/OrderFlow.Order.Application/OrderFlow.Order.Application.csproj", "src/Order/OrderFlow.Order.Application/"]
+COPY ["src/Order/OrderFlow.Order.Domain/OrderFlow.Order.Domain.csproj", "src/Order/OrderFlow.Order.Domain/"]
+COPY ["src/Order/OrderFlow.Order.Infrastructure/OrderFlow.Order.Infrastructure.csproj", "src/Order/OrderFlow.Order.Infrastructure/"]
 RUN dotnet restore "src/Order/OrderFlow.Order.Api/OrderFlow.Order.Api.csproj"
 COPY . .
 WORKDIR "/src/src/Order/OrderFlow.Order.Api"

@@ -56,4 +56,13 @@ public static class DependencyInjection
 
         return services;
     }
+
+    public static void ApplyMigrations(this IServiceProvider serviceProvider)
+    {
+        using var scope = serviceProvider.CreateScope();
+
+        var orderDbContext = scope.ServiceProvider.GetRequiredService<OrderDbContext>();
+
+        orderDbContext.Database.Migrate();
+    }
 }

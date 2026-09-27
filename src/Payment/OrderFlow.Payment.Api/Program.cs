@@ -63,4 +63,6 @@ app.MapHealthChecks("/health", new HealthCheckOptions
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
 
+app.Services.ApplyMigrations();
+
 app.Run();

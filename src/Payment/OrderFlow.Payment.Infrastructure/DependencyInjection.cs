@@ -53,4 +53,13 @@ public static class DependencyInjection
 
         return services;
     }
+    
+    public static void ApplyMigrations(this IServiceProvider serviceProvider)
+    {
+        using var scope = serviceProvider.CreateScope();
+
+        var paymentDbContext = scope.ServiceProvider.GetRequiredService<PaymentDbContext>();
+
+        paymentDbContext.Database.Migrate();
+    }
 }
